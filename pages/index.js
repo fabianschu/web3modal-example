@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Header from '../components/Header'
 import { useEffect, useContext } from 'react'
 import { ellipseAddress, getChainData } from '../lib/utilities.js'
+import TokenBalances from '../components/TokenBalances'
 
 export const Home = () => {
   const { state, dispatch, connect, disconnect } = useContext(Web3Context)
@@ -10,7 +11,8 @@ export const Home = () => {
 
   // Auto connect to the cached provider
   useEffect(() => {
-    if (web3Modal.cachedProvider) {
+    const { cachedProvider } = web3Modal
+    if (cachedProvider) {
       connect()
     }
   }, [connect])
@@ -53,34 +55,18 @@ export const Home = () => {
         }
       }
     }
-  }, [provider, disconnect])
-
-  const chainData = getChainData(chainId)
+  }, [provider, disconnect, dispatch])
 
   return (
     <div className="container">
-      <Header />
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <header>
-        {address && (
-          <div className="grid">
-            <div>
-              <p className="mb-1">Network:</p>
-              <p>{chainData?.name}</p>
-            </div>
-            <div>
-              <p className="mb-1">Address:</p>
-              <p>{ellipseAddress(address)}</p>
-            </div>
-          </div>
-        )}
-      </header>
-
-      <main>Main</main>
+      <Header />
+      <main>
+        <TokenBalances />
+      </main>
     </div>
   )
 }
